@@ -3,13 +3,11 @@ package com.smartside.numfinder;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.singletonList;
-
 public class NumFinder {
 
-    public List<Integer> find(final List<Integer> numbers) {
+    public Integer find(final List<Integer> numbers) {
         if (numbers.isEmpty()) {
-            return singletonList(0);
+            return 0;
         }
 
         numbers.forEach(number -> {
@@ -19,7 +17,16 @@ public class NumFinder {
         });
 
         Integer minDistanceToZero = numbers.stream().mapToInt(num -> distanceToZero(num)).min().getAsInt();
-        return numbers.stream().filter(num -> minDistanceToZero.equals(distanceToZero(num))).collect(Collectors.toList());
+        List<Integer> numbersClosestToZero = numbers.stream()
+                .filter(num -> minDistanceToZero.equals(distanceToZero(num)))
+                .distinct()
+                .collect(Collectors.toList());
+
+        if (numbersClosestToZero.size() == 1) {
+            return numbersClosestToZero.get(0);
+        }
+
+        return numbersClosestToZero.stream().filter(num -> num > 0).findFirst().get();
     }
 
     private int distanceToZero(final Integer num) {
